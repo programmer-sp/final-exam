@@ -232,10 +232,10 @@ resource "aws_autoscaling_attachment" "asg_attachment" {
   lb_target_group_arn    = aws_lb_target_group.parmar-lb-tg.arn
 }
 
-# Load balancer target group for frontend
+# Load balancer target group
 resource "aws_lb_target_group" "parmar-lb-tg" {
   name        = "parmar-lb-tg"
-  port        = 3000
+  port        = 5000
   protocol    = "HTTP"
   vpc_id      = aws_vpc.parmar_vpc.id
   target_type = "ip"
@@ -312,7 +312,7 @@ resource "aws_ecs_service" "parmar_ecs" {
   load_balancer {
     target_group_arn = aws_lb_target_group.parmar-lb-tg.arn
     container_name   = aws_ecs_task_definition.parmar_ecs_task.family
-    container_port   = 3000
+    container_port   = 5000
   }
 
   network_configuration {

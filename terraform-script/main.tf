@@ -183,7 +183,7 @@ resource "aws_lb" "parmar-alb" {
 
 resource "aws_key_pair" "mykeypair" {
   key_name   = "mykeypair"
-  public_key = file("keypair.pub")
+  public_key = file("mykeypair.pub")
 }
 
 # Launch Template

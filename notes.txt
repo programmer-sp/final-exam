@@ -1,0 +1,17 @@
+create github repo
+
+upload the code in github
+
+aws ecr create-repository --repository-name parmar-final --region ca-central-1
+
+
+docker compose up --build -d
+
+
+docker tag final-exam-server:latest851725659285.dkr.ecr.ca-central-1.amazonaws.com/parmar-final:server-latest
+
+
+aws ecr get-login-password --region ca-central-1 | docker login --username AWS --password-stdin 851725659285.dkr.ecr.ca-central-1.amazonaws.com
+
+
+docker push 851725659285.dkr.ecr.ca-central-1.amazonaws.com/parmar-final:server-latest

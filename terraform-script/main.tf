@@ -181,7 +181,7 @@ resource "aws_lb" "parmar-alb" {
   }
 }
 
-# Load balancer target group
+# Load balancer target group 
 resource "aws_lb_target_group" "parmar-lb-tg" {
   name        = "parmar-lb-tg"
   port        = 5000

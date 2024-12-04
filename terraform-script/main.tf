@@ -181,57 +181,6 @@ resource "aws_lb" "parmar-alb" {
   }
 }
 
-resource "aws_key_pair" "mykeypair" {
-  key_name   = "mykeypair"
-  public_key = file("mykeypair.pub")
-}
-
-# Launch Template
-resource "aws_launch_template" "parmar_lt" {
-  name                   = "parmar_lt"
-  image_id               = "ami-038aeeeeed95c7942"
-  instance_type          = "t2.micro"
-  vpc_security_group_ids = [aws_security_group.parmar_ecs_sg.id]
-  key_name               = aws_key_pair.mykeypair.key_name
-  depends_on             = [aws_key_pair.mykeypair, aws_security_group.parmar_ecs_sg]
-}
-
-# Auto Scaling Group
-resource "aws_autoscaling_group" "parmar_asg" {
-  name             = "parmar_asg"
-  desired_capacity = 2
-  max_size         = 5
-  min_size         = 1
-  launch_template {
-    id      = aws_launch_template.parmar_lt.id
-    version = "$Latest"
-  }
-  vpc_zone_identifier = aws_subnet.parmar_priv_subnet[*].id
-  tag {
-    key                 = "Name"
-    value               = "parmar_ec2"
-    propagate_at_launch = true
-  }
-  depends_on = [aws_launch_template.parmar_lt]
-}
-
-resource "aws_autoscaling_policy" "avg_cpu_policy_greater" {
-  name                   = "avg-cpu-policy-greater"
-  policy_type            = "TargetTrackingScaling"
-  autoscaling_group_name = aws_autoscaling_group.parmar_asg.id
-  target_tracking_configuration {
-    predefined_metric_specification {
-      predefined_metric_type = "ASGAverageCPUUtilization"
-    }
-    target_value = 90.0
-  }
-}
-
-resource "aws_autoscaling_attachment" "asg_attachment" {
-  autoscaling_group_name = aws_autoscaling_group.parmar_asg.id
-  lb_target_group_arn    = aws_lb_target_group.parmar-lb-tg.arn
-}
-
 # Load balancer target group
 resource "aws_lb_target_group" "parmar-lb-tg" {
   name        = "parmar-lb-tg"

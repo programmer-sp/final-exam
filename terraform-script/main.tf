@@ -206,13 +206,13 @@ resource "aws_autoscaling_group" "parmar_asg" {
     id      = aws_launch_template.parmar_lt.id
     version = "$Latest"
   }
-  vpc_zone_identifier = [aws_subnet.parmar_pri_sub_1.id, aws_subnet.parmar_pri_sub_2.id]
+  vpc_zone_identifier = aws_subnet.parmar_priv_subnet[*].id
   tag {
     key                 = "Name"
     value               = "parmar_ec2"
     propagate_at_launch = true
   }
-  depends_on = [aws_launch_template.parmar_lt, aws_subnet.parmar_pri_sub_1, aws_subnet.parmar_pri_sub_2]
+  depends_on = [aws_launch_template.parmar_lt]
 }
 
 resource "aws_autoscaling_policy" "avg_cpu_policy_greater" {
